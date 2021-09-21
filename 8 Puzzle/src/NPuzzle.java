@@ -1,25 +1,25 @@
 
 public class NPuzzle {
 
-	public NPuzzle(int n) {
-		int square = n+1;
-
-		this.width = (int)Math.sqrt(square);
-		this.state = new Integer[this.width][this.width];
-	}
-
+	
 	private class Pointer {
 		private Pointer(int r, int c) {
 			this.setCoords(r, c);
 		}
-
+		
 		private void setCoords(int r, int c) {
 			this.row = r;
 			this.col = c;
 		}
-
+		
 		private int row;
 		private int col;
+	}
+	
+	public NPuzzle(int n) {
+		int square = n+1;
+		this.width = (int)Math.sqrt(square);
+		this.state = new Integer[this.width][this.width];
 	}
 
 	private int width;
