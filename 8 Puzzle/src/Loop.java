@@ -1,4 +1,3 @@
-import jdk.internal.util.xml.impl.Input;
 
 /*
     This class reads input from a text file and performs commands based on this input.
@@ -12,9 +11,11 @@ public class Loop {
     }
 
     public static String getCommand() {
+        return "";
     }
 
     public static String getModifier() {
+        return "";
     }
 
     public static void main(String[] args) {
