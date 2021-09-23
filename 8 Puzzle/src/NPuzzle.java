@@ -149,12 +149,12 @@ public class NPuzzle {
 			}
 		}
 	}
-
-	public int heuristic1() {	// number of correctly or incorrectly placed tiles.
+	
+	public int heuristic1() {	// number of misplaced tiles.
 		return 0;
 	}
 
-	public int heuristic2() {	// manhattan distance
+	public int heuristic2() {	// manhattan distance (sum of tile distance to their correct position)
 		return 0;
 	}
 }
