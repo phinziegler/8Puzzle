@@ -15,9 +15,9 @@ public class NPuzzle {
 		private int row;
 		private int col;
 	}
-	
+
 	public NPuzzle(int n) {
-		int square = n+1;
+		int square = n + 1;
 		this.width = (int)Math.sqrt(square);
 		this.state = new Integer[this.width][this.width];
 	}
@@ -148,6 +148,14 @@ public class NPuzzle {
 				//i--;	// tried a move that couldnt be done, try a new move.
 			}
 		}
+	}
+
+	public int heuristic1() {	// number of correctly or incorrectly placed tiles.
+		return 0;
+	}
+
+	public int heuristic2() {	// manhattan distance
+		return 0;
 	}
 }
 

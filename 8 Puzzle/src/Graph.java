@@ -2,16 +2,19 @@ import java.util.LinkedList;
 
 /*
     Graph that will have puzzle states as nodes. Can use A* and bream searches
+        NOTE: each node should have its state represented by a string. Finding the goal state is easy this way,
+        memory is saved.
 */
 public class Graph {
     
     private class Node {    // holds a state, and a list of edges, also holds the heuristic cost
-        private int hCost;
+        private int hCost;  // heuristic cost for this node
         private LinkedList<Edge> edges = new LinkedList<Edge>();
+        private
     }
 
     private class Edge {    // holds a cost, endNode, and startNode
-        private int gCost;
+        private int gCost;  // actual cost for this edge
         private Node startNode;
         private Node endNode;
     }
@@ -41,7 +44,7 @@ public class Graph {
     }
 
     public void beam() {
-        
+
     }
 
 }
