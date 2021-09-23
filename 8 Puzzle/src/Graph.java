@@ -10,7 +10,7 @@ public class Graph {
     private class Node {    // holds a state, and a list of edges, also holds the heuristic cost
         private int hCost;  // heuristic cost for this node
         private LinkedList<Edge> edges = new LinkedList<Edge>();
-        private
+        private String state;
     }
 
     private class Edge {    // holds a cost, endNode, and startNode

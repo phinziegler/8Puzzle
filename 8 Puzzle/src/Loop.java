@@ -21,13 +21,10 @@ public class Loop {
     public static void main(String[] args) {
 
         NPuzzle puzzle = new NPuzzle(8);
-
         Graph pGraph = new Graph();
-
-        boolean loop = true;
-
         Loop.setFilePath("<filepath>");
-
+        
+        boolean loop = true;
         while (loop) { // this loop will capture input from the text file, and then use a switch
                        // statement to perform the commands.
             String command = Loop.getCommand(); // returns some string
@@ -35,6 +32,7 @@ public class Loop {
 
             switch (command) {
                 case "setState":
+                    System.out.println("Found command 'setState('" + modifier + "')");
                     puzzle.setState(modifier);
                     break;
                 case "printState":
