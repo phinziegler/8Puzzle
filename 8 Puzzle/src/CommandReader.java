@@ -20,7 +20,7 @@ public class CommandReader {
 
     }
 
-    // read line by line from filepath
+    // readTxt --- turns the txt file at filepath into a string.
     private String readTxt() {
 		StringBuilder stringBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(this.filePath), StandardCharsets.UTF_8)){
@@ -31,27 +31,26 @@ public class CommandReader {
         }
 
         String output = stringBuilder.toString();
-        //System.out.println(output);
-
 		return output;
 	}
 
+    // generateCommandList --- turns the input text into linked list where each element is a full line.
     private LinkedList<String> generateCommandList(String text) {
         LinkedList<String> list = new LinkedList<String>();
-        Scanner scanner = new Scanner(text);
+        Scanner scanner = new Scanner(text);    // reads the string.
 
-        while(scanner.hasNext()) {
-            String line = scanner.nextLine();
+        while(scanner.hasNext()) {              // add each line to list
+            String line = scanner.nextLine();   
             list.addLast(line);
-            //System.out.println("added line \"" + line + "\"");
         }
 
         scanner.close();
         return list;
     }
 
+    // getCommand --- returns a string array where the first element is the command, and the second is the input.
     public String[] getCommand() {
-        if (this.commandList.size() <= 0) {
+        if (this.commandList.size() <= 0) {     // return blank when no commands are left.
             return new String[]{"",""};
         }
 
@@ -63,12 +62,12 @@ public class CommandReader {
         StringBuilder comBuilder = new StringBuilder();
         StringBuilder inBuilder = new StringBuilder();
 
-        StringBuilder curr = comBuilder;
-        for(int i = 0; i < line.length(); i++) {
+        StringBuilder curr = comBuilder;        // the current stringbuilder to use.
+        for(int i = 0; i < line.length(); i++) {    
             if(line.charAt(i) != ' ') {
                 curr.append(line.charAt(i));
             }
-            else {
+            else {                              // after the space, you build the input string.
                 curr = inBuilder;
             }
         }
@@ -87,7 +86,7 @@ public class CommandReader {
     /// MAIN /// 
     ////////////
 
-
+    // read through the commands in text file, and perform them.
     public static void main(String[] args) {
 
         NPuzzle puzzle = new NPuzzle(8);
@@ -96,7 +95,7 @@ public class CommandReader {
         CommandReader reader = new CommandReader("D:\\commands.txt");
 
         boolean loop = true;
-        while (loop) {              // this loop will capture input from the text file, and then use a switch statement to perform the commands.
+        while (loop) {              //use a switch statement to perform the commands.
             String[] line = reader.getCommand();
             String command = line[0];
             String input = line[1];
@@ -128,7 +127,7 @@ public class CommandReader {
                     break;
             }
         }
-        //endWHile
+        
     }
 
 }
