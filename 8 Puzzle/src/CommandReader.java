@@ -31,19 +31,19 @@ public class CommandReader {
         }
 
         String output = stringBuilder.toString();
-        System.out.println(output);
+        //System.out.println(output);
 
 		return output;
 	}
 
-    public LinkedList<String> generateCommandList(String text) {
+    private LinkedList<String> generateCommandList(String text) {
         LinkedList<String> list = new LinkedList<String>();
         Scanner scanner = new Scanner(text);
 
         while(scanner.hasNext()) {
             String line = scanner.nextLine();
-            this.commandList.addLast(line);
-            System.out.println("added line \"" + line + "\" to list of commands");
+            list.addLast(line);
+            System.out.println("added line \"" + line + "\"");
         }
 
         scanner.close();
@@ -51,10 +51,12 @@ public class CommandReader {
     }
 
     public String[] getCommand() {
+        if (this.commandList.size() <= 0) {
+            return new String[]{"",""};
+        }
 
         String line = this.commandList.removeFirst();
-        System.out.println("got command " + line);
-
+        
         String command;
         String input;
 
@@ -62,7 +64,6 @@ public class CommandReader {
         StringBuilder inBuilder = new StringBuilder();
 
         StringBuilder curr = comBuilder;
-
         for(int i = 0; i < line.length(); i++) {
             if(line.charAt(i) != ' ') {
                 curr.append(line.charAt(i));
@@ -75,53 +76,55 @@ public class CommandReader {
         command = comBuilder.toString();
         input = inBuilder.toString();
 
-        System.out.println("command: " + command + "\nmodifier: " + input);
+        //System.out.println("command: " + command + "\nmodifier: " + input);
 
         String[] output = {command, input};
-
         return output;
     }
+
+
+    ////////////
+    /// MAIN /// 
+    ////////////
+
 
     public static void main(String[] args) {
 
         NPuzzle puzzle = new NPuzzle(8);
         Graph pGraph = new Graph();
-        CommandReader reader = new CommandReader("D:\\commands.txt");
-        boolean loop = true;
-        int i = 0;
-        while (loop) { // this loop will capture input from the text file, and then use a switch
-                       // statement to perform the commands.
-            i++;
-            if(i > 3) {
-                return;
-            }
 
+        CommandReader reader = new CommandReader("D:\\commands.txt");
+
+        boolean loop = true;
+        while (loop) {              // this loop will capture input from the text file, and then use a switch statement to perform the commands.
             String[] line = reader.getCommand();
             String command = line[0];
-            String modifier = line[1];
+            String input = line[1];
 
             switch (command) {
                 case "setState":
-                    System.out.println("Found command 'setState('" + modifier + "')");
-                    puzzle.setState(modifier);
+                    puzzle.setState(input);
                     break;
                 case "printState":
                     puzzle.printState();
                     break;
+                case "printIntState":
+                    puzzle.printIntState();
+                    break;
                 case "move":
-                    puzzle.move(modifier);
+                    puzzle.move(input);
                     break;
                 case "randomizeState":
-                    puzzle.randomizeState(Integer.parseInt(modifier));
+                    puzzle.randomizeState(Integer.parseInt(input));
                     break;
                 case "solve":
-                    pGraph.solve(modifier);
+                    pGraph.solve(input);
                     break;
                 case "maxNodes":
-                    pGraph.maxNodes(Integer.parseInt(modifier));
+                    pGraph.maxNodes(Integer.parseInt(input));
                     break;
                 default:
-                    System.out.println(new Exception("Invalid Command"));
+                    loop = false;
                     break;
             }
         }
