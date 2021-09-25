@@ -43,7 +43,7 @@ public class CommandReader {
         while(scanner.hasNext()) {
             String line = scanner.nextLine();
             list.addLast(line);
-            System.out.println("added line \"" + line + "\"");
+            //System.out.println("added line \"" + line + "\"");
         }
 
         scanner.close();
