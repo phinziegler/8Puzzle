@@ -90,7 +90,7 @@ public class CommandReader {
     public static void main(String[] args) {
 
         NPuzzle puzzle = new NPuzzle(8);
-        Graph pGraph = new Graph();
+        Graph pGraph = new Graph(puzzle, 2000, "h1");
 
         CommandReader reader = new CommandReader("D:\\commands.txt");
 
@@ -127,7 +127,7 @@ public class CommandReader {
                     break;
             }
         }
-        
+
     }
 
 }

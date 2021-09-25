@@ -8,7 +8,7 @@ public class Test {
 		
 		puzzle.randomizeState(50);
 		
-		puzzle.printIntState();
+		//puzzle.printIntState();
 		puzzle.printState();
 
 		puzzle.heuristic2();

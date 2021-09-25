@@ -1,30 +1,34 @@
 
 public class NPuzzle {
 
-	
+	// points at blank 
 	private class Pointer {
 		private Pointer(int r, int c) {
 			this.setCoords(r, c);
 		}
-		
+
+		// Coords
+		private int row;
+		private int col;
+
+		// setCoords
 		private void setCoords(int r, int c) {
 			this.row = r;
 			this.col = c;
 		}
-		
-		private int row;
-		private int col;
 	}
 
+	// Constructor
 	public NPuzzle(int n) {
 		int square = n + 1;
 		this.width = (int)Math.sqrt(square);
 		this.state = new Integer[this.width][this.width];
 	}
 
+	// Private variables
 	private int width;
 	private Integer[][] state;
-	private Pointer bPoint;	// [r][c] of the blank slot
+	private Pointer bPoint;	// [r][c] of the blank slot --- tracking this lets us do moves faster
 
 	// set state
 	public void setState(String state) {	// "b12 345 678"
@@ -55,21 +59,26 @@ public class NPuzzle {
 		}
 	}
 
-	// String Representation of State
-	public void printState() {
-		for(int r = 0; r < this.width; r++) {
+	public String getState() {
+		StringBuilder sb = new StringBuilder();
 
+		for(int r = 0; r < this.width; r++) {
 			for(int c = 0; c < this.width; c++) {
 				if(this.state[r][c] == null) {
-					System.out.print("b");
+					sb.append('b');
 				}
 				else {
-					System.out.print(this.state[r][c]);	
+					sb.append(this.state[r][c]);	
 				}
 			}
-			System.out.print(" ");
+			sb.append(' ');
 		}
-		System.out.print("\n");
+		return sb.toString();
+	}
+
+	// String Representation of State
+	public void printState() {
+		System.out.println(getState());
 	}
 
 	// Visual Representation of State
