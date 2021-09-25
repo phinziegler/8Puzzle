@@ -15,9 +15,9 @@ public class NPuzzle {
 		private int row;
 		private int col;
 	}
-	
+
 	public NPuzzle(int n) {
-		int square = n+1;
+		int square = n + 1;
 		this.width = (int)Math.sqrt(square);
 		this.state = new Integer[this.width][this.width];
 	}
@@ -145,9 +145,55 @@ public class NPuzzle {
 				//System.out.println(randMove);
 			}
 			else {
-				//i--;	// tried a move that couldnt be done, try a new move.
+				i--;	// tried a move that couldnt be done, try a new move.
 			}
 		}
+	}
+
+	//////////////////////////////
+	/// HEURISTICS CALCULATION /// 
+	//////////////////////////////
+
+	public int heuristic1() {	// number of misplaced tiles.
+		int sum = 0;
+		for(int r = 0; r < this.state.length; r++) {
+			for(int c = 0; c < state[r].length; c++) {
+				int i = (r*this.state.length) + c;
+				if(this.state[r][c] == null) {
+					if(r + c != 0)
+						sum++;
+				}
+				else if(this.state[r][c] != i) {
+					sum++;
+				}
+			}
+		}
+		System.out.println("H1 = " + sum);
+		return sum;
+	}
+
+	public int heuristic2() {	// manhattan distance (sum of tile distance to their correct position)
+		int sum = 0;
+		for(int r = 0; r < this.state.length; r++) {
+			for(int c = 0; c < this.state[r].length; c++) {
+				sum += this.h2Dist(r,c);
+			}
+		}
+		System.out.println("H2 = " + sum);
+		return sum;
+	}
+	private int h2Dist(int r, int c) {
+		int val;
+		if(this.state[r][c] == null) {
+			val = 0;
+		}
+		else {
+			val = this.state[r][c];
+		}
+		int goodRow = val / this.state.length; 
+		int goodCol = val % this.state.length;
+		int dist = Math.abs(r - goodRow) + Math.abs(c - goodCol);
+		return dist;
 	}
 }
 
