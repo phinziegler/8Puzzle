@@ -15,17 +15,17 @@ public class Graph {
     private class Node implements Comparable<Node> {    // holds a state, and a list of edges, also holds the heuristic cost
         private int hCost;      // heuristic cost for this node
         private int gCost;      // total cost to get here from initial state.
-        private int fCost;
+        private int fCost;      // h + g
         private String state;   // will also be used as the id.
         private String move;    // the move taken to get to this state
-        private Node parent;
+        private Node parent;    // parent of node.
         private LinkedList<Edge> edges = new LinkedList<Edge>();
 
         private void calcHeuristic() {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(this.state);
 
-            this.hCost = puzzle.heuristic1();
+            this.hCost = puzzle.heuristic2();
             this.fCost = this.hCost + this.gCost;
         }
         
@@ -33,18 +33,8 @@ public class Graph {
             this.state = state;
             this.move = move;
             this.gCost = gCost;
+            this.parent = parent;
         }
-
-        // @Override
-        // public int compare(Graph.Node o1, Graph.Node o2) {
-        //     if(o1.fCost < o2.fCost) {
-        //         return -1;
-        //     }
-        //     if(o1.fCost > o2.fCost) {
-        //         return 1;
-        //     }
-        //     return 0;
-        // }
 
         @Override
         public int compareTo(Graph.Node o) {
@@ -55,6 +45,14 @@ public class Graph {
                 return 1;
             }
             return 0;
+        }
+
+        @Override
+        public boolean equals(Graph.Node o) {
+            if(this.gCost == o.gCost && this.state.equals(o.state)) {
+                return true;
+            }
+            return false;
         }
     }
 
@@ -72,7 +70,6 @@ public class Graph {
     // Graph Constructor
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
-        System.out.println("ROOT NODE STATE = " + this.rootNode.state + ":: puzzle output " + puzzle.getState());
         this.rootNode.gCost = 0;
         this.rootNode.calcHeuristic();
         this.maxNodes = maxNodes;
@@ -137,24 +134,22 @@ public class Graph {
     */
     public void aStar() {
         PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // could use hash table and prio queue together for better performance
-        Hashtable<String, String> explored = new Hashtable<String, String>();  // list of explored STATES not nodes.
+        Hashtable<String, Node> explored = new Hashtable<String, Node>();  // list of explored STATES not nodes.
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
-        
+        System.out.println("Solving from state: " + this.rootNode.state);
         while(!frontier.isEmpty()) {
             Node curr = frontier.poll();
             if (curr.state.equals(this.goalState)) {
-                System.out.println("reached goal");
+                System.out.println("Reached Goal after " + nodesExplored + " nodes explored.");
                 this.printPath(curr);
                 return;
             }
-            explored.put(curr.state, curr.state);
+            explored.put(curr.state, curr);
             nodesExplored++;
-            //System.out.println("Num explored: " + nodesExplored);
-            System.out.println("exploring " + curr.state);
-            if(this.maxNodes < nodesExplored) {
-                System.out.println("Max number of nodes searched.");
+            if(this.maxNodes > 0 && this.maxNodes < nodesExplored) {
+                System.out.println("Max number of nodes searched (" + this.maxNodes + ").");
                 return;
             }
 
@@ -162,22 +157,27 @@ public class Graph {
             Iterator<Edge> iterator = curr.edges.iterator();
             while(iterator.hasNext()) {
                 Node n = iterator.next().endNode;
-                if(explored.contains(n.state)) {
-                    //continue;
+                n.calcHeuristic();
+                if(explored.contains(n)) {
+                    System.out.println("explored contains n");
+                    continue;
                 }
                 int cost = curr.gCost + 1;
 
                 Node same = this.getNodeWithSameState(frontier, n);
                 if(cost < n.gCost && frontier.contains(same)) {
+                    //System.out.println("2");
                     frontier.remove(same);  // new path is better
                 }
-                if(explored.contains(n.state) && cost < n.gCost) {
+                if(explored.contains(n) && cost < n.gCost) { // EXPERIMENTAL
+                    //System.out.println("3");
                     explored.remove(n.state);
                 }
-                if(!frontier.contains(same) && !explored.contains(n.state)) {
-                    frontier.add(n);
-                    n.gCost = cost; // huh?
+                if(!frontier.contains(same) && !explored.contains(n)) {
+                    //System.out.println("4");
                     n.calcHeuristic();
+                    frontier.add(n);
+                    //n.gCost = cost; // huh?
                     
                 }
             }
@@ -218,17 +218,19 @@ public class Graph {
 
     // printpath
     private void printPath(Node end) {
+        System.out.println("Solution Path:");
         Node curr = end;
         LinkedList<String> moveList = new LinkedList<String>();
         while(curr.parent != null) {
             moveList.addFirst(curr.move);
+            curr = curr.parent;
         }
         String move;
         Iterator<String> iterator = moveList.iterator();
         while(iterator.hasNext()) {
             move = iterator.next();
             System.out.print(move);
-            System.out.print(", ");
+            System.out.print(" ");
         }
     }
 

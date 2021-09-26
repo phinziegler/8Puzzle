@@ -188,7 +188,7 @@ public class NPuzzle {
 				sum += this.h2Dist(r,c);
 			}
 		}
-		System.out.println("H2 = " + sum);
+		//System.out.println("H2 = " + sum);
 		return sum;
 	}
 	private int h2Dist(int r, int c) {
