@@ -69,6 +69,7 @@ public class Graph {
         }
     }
 
+    // A-Star
     public String aStar() {
         PriorityQueue<String> frontier = new PriorityQueue<String>();   // could use hash table and prio queue together for better performance
         Hashtable<String, String> explored = new Hashtable<String, String>();  // list of explored states
@@ -81,6 +82,7 @@ public class Graph {
         return "";
     }
 
+    // Beam Search
     public void beam() {
 
     }
