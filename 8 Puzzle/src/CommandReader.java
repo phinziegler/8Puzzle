@@ -90,9 +90,9 @@ public class CommandReader {
     public static void main(String[] args) {
 
         NPuzzle puzzle = new NPuzzle(8);
-        Graph pGraph = new Graph(puzzle, 2000, "h1");
-
         CommandReader reader = new CommandReader("D:\\commands.txt");
+        int maxNodes = 200;
+        Graph pGraph;
 
         boolean loop = true;
         while (loop) {              //use a switch statement to perform the commands.
@@ -117,10 +117,12 @@ public class CommandReader {
                     puzzle.randomizeState(Integer.parseInt(input));
                     break;
                 case "solve":
+                    pGraph = new Graph(puzzle, maxNodes, "h1");
                     pGraph.solve(input);
+                    //pGraph.solve(input);
                     break;
                 case "maxNodes":
-                    pGraph.maxNodes(Integer.parseInt(input));
+                    maxNodes = (Integer.parseInt(input));
                     break;
                 default:
                     loop = false;

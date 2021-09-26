@@ -72,6 +72,7 @@ public class Graph {
     // Graph Constructor
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
+        System.out.println("ROOT NODE STATE = " + this.rootNode.state + ":: puzzle output " + puzzle.getState());
         this.rootNode.gCost = 0;
         this.rootNode.calcHeuristic();
         this.maxNodes = maxNodes;
@@ -82,7 +83,7 @@ public class Graph {
 //  private NPuzzle puzzle;
     private int maxNodes;
     private String heuristic;
-    private String goalState = "b12 345 678";
+    private String goalState = "b12 345 678 ";
 
     // maxNodes --- set max nodes to travel
     public void maxNodes(int n) {
@@ -139,17 +140,19 @@ public class Graph {
         Hashtable<String, String> explored = new Hashtable<String, String>();  // list of explored STATES not nodes.
 
         frontier.add(this.rootNode);
+        int nodesExplored = 0;
         
         while(!frontier.isEmpty()) {
             Node curr = frontier.poll();
-            int nodesExplored = 0;
-            if (curr.state == this.goalState) {
+            if (curr.state.equals(this.goalState)) {
                 System.out.println("reached goal");
                 this.printPath(curr);
                 return;
             }
             explored.put(curr.state, curr.state);
             nodesExplored++;
+            //System.out.println("Num explored: " + nodesExplored);
+            System.out.println("exploring " + curr.state);
             if(this.maxNodes < nodesExplored) {
                 System.out.println("Max number of nodes searched.");
                 return;
@@ -206,7 +209,7 @@ public class Graph {
         Iterator<Node> iterator = frontier.iterator();
         while(iterator.hasNext()) {
             Node curr = iterator.next();
-            if(curr.state == n.state) {
+            if(curr.state.equals(n.state)) {
                 return curr;
             }
         }

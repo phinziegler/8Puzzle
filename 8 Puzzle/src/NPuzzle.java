@@ -177,7 +177,7 @@ public class NPuzzle {
 				}
 			}
 		}
-		System.out.println("H1 = " + sum);
+		//System.out.println("H1 = " + sum);
 		return sum;
 	}
 
