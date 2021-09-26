@@ -1,4 +1,6 @@
+//import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -9,38 +11,75 @@ import java.util.PriorityQueue;
 */
 public class Graph {
     
-    private class Node {    // holds a state, and a list of edges, also holds the heuristic cost
-        private int hCost;  // heuristic cost for this node
-        private LinkedList<Edge> edges = new LinkedList<Edge>();
+    // Node Class
+    private class Node implements Comparable<Node> {    // holds a state, and a list of edges, also holds the heuristic cost
+        private int hCost;      // heuristic cost for this node
+        private int gCost;      // total cost to get here from initial state.
+        private int fCost;
         private String state;   // will also be used as the id.
+        private String move;    // the move taken to get to this state
+        private Node parent;
+        private LinkedList<Edge> edges = new LinkedList<Edge>();
 
-        private Node(String state) {
+        private void calcHeuristic() {
+            NPuzzle puzzle = new NPuzzle(8);
+            puzzle.setState(this.state);
+
+            this.hCost = puzzle.heuristic1();
+            this.fCost = this.hCost + this.gCost;
+        }
+        
+        private Node(String state, String move, int gCost, Node parent) {
             this.state = state;
+            this.move = move;
+            this.gCost = gCost;
+        }
+
+        // @Override
+        // public int compare(Graph.Node o1, Graph.Node o2) {
+        //     if(o1.fCost < o2.fCost) {
+        //         return -1;
+        //     }
+        //     if(o1.fCost > o2.fCost) {
+        //         return 1;
+        //     }
+        //     return 0;
+        // }
+
+        @Override
+        public int compareTo(Graph.Node o) {
+            if(this.fCost < o.fCost) {
+                return -1;
+            }
+            if(this.fCost > o.fCost) {
+                return 1;
+            }
+            return 0;
         }
     }
 
+    // Edge Class
     private class Edge {    // holds a cost, endNode, and startNode
-        private int cost;  // actual cost for this edge
         private Node startNode;
         private Node endNode;
 
         private Edge(Node start, Node end) {
             this.startNode = start;
             this.endNode = end;
-            this.cost = 1;
         }
     }
 
+    // Graph Constructor
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
-        this.puzzle = puzzle;
+        this.rootNode = new Node(puzzle.getState(), "", 0, null);
+        this.rootNode.gCost = 0;
+        this.rootNode.calcHeuristic();
         this.maxNodes = maxNodes;
         this.heuristic = heuristic;
-
-        this.rootNode = new Node(puzzle.getState());
     }
 
     private Node rootNode;
-    private NPuzzle puzzle;
+//  private NPuzzle puzzle;
     private int maxNodes;
     private String heuristic;
     private String goalState = "b12 345 678";
@@ -70,16 +109,124 @@ public class Graph {
     }
 
     // A-Star
-    public String aStar() {
-        PriorityQueue<String> frontier = new PriorityQueue<String>();   // could use hash table and prio queue together for better performance
-        Hashtable<String, String> explored = new Hashtable<String, String>();  // list of explored states
+    /*
+        1. Add root to frontier, then loop...
 
-        return aStarRecurse(frontier, explored, 0);
+        while(!frontier.isEmpty()) {
+            currNode = frontier.poll;
+            if currNode.isGoal
+                return
+            explored.add(currNode);
+
+            forEach n in curr{
+                if explored.contains(n)
+                    continue
+                cost = curr.gCost + 1;
+                if n in Frontier and cost < g(n)
+                    remove n from frontier. // new path is better anyway.
+                if n in explored and cost < n.gCost()
+                    remove n from explored
+                if n not in frontier and n not in explored
+                    frontier.add(n)
+                    n.gCost = cost
+                    n.calcHeuristic()
+            }
+        }
+
+    */
+    public void aStar() {
+        PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // could use hash table and prio queue together for better performance
+        Hashtable<String, String> explored = new Hashtable<String, String>();  // list of explored STATES not nodes.
+
+        frontier.add(this.rootNode);
+        
+        while(!frontier.isEmpty()) {
+            Node curr = frontier.poll();
+            int nodesExplored = 0;
+            if (curr.state == this.goalState) {
+                System.out.println("reached goal");
+                this.printPath(curr);
+                return;
+            }
+            explored.put(curr.state, curr.state);
+            nodesExplored++;
+            if(this.maxNodes < nodesExplored) {
+                System.out.println("Max number of nodes searched.");
+                return;
+            }
+
+            this.expand(curr);
+            Iterator<Edge> iterator = curr.edges.iterator();
+            while(iterator.hasNext()) {
+                Node n = iterator.next().endNode;
+                if(explored.contains(n.state)) {
+                    //continue;
+                }
+                int cost = curr.gCost + 1;
+
+                Node same = this.getNodeWithSameState(frontier, n);
+                if(cost < n.gCost && frontier.contains(same)) {
+                    frontier.remove(same);  // new path is better
+                }
+                if(explored.contains(n.state) && cost < n.gCost) {
+                    explored.remove(n.state);
+                }
+                if(!frontier.contains(same) && !explored.contains(n.state)) {
+                    frontier.add(n);
+                    n.gCost = cost; // huh?
+                    n.calcHeuristic();
+                    
+                }
+            }
+        }
+        // failed
+        System.out.println("Failed to find solution.");
+        return;
+
     }
-    private String aStarRecurse(PriorityQueue<String> frontier, Hashtable<String,String> explored, int cost) {
 
+    // expand a node
+    private void expand(Node curr) {
+        String[] moveList = new String[]{"right", "down", "left", "up"};
 
-        return "";
+        for(int i = 0; i < moveList.length; i++) {
+            NPuzzle puzzle = new NPuzzle(8);
+            puzzle.setState(curr.state);
+            boolean valid = puzzle.move(moveList[i]);
+
+            if(valid) { // if the move was legal.
+                String newState = puzzle.getState();
+                this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + 1, curr));
+            }
+        }
+    }
+
+    // looks throught the frontier and returns a node with a state matching that of n.
+    private Node getNodeWithSameState(PriorityQueue<Node> frontier, Node n) {
+        Iterator<Node> iterator = frontier.iterator();
+        while(iterator.hasNext()) {
+            Node curr = iterator.next();
+            if(curr.state == n.state) {
+                return curr;
+            }
+        }
+        return new Node("", "", 0, null); // impossible to exist in frontier.
+    }
+
+    // printpath
+    private void printPath(Node end) {
+        Node curr = end;
+        LinkedList<String> moveList = new LinkedList<String>();
+        while(curr.parent != null) {
+            moveList.addFirst(curr.move);
+        }
+        String move;
+        Iterator<String> iterator = moveList.iterator();
+        while(iterator.hasNext()) {
+            move = iterator.next();
+            System.out.print(move);
+            System.out.print(", ");
+        }
     }
 
     // Beam Search
