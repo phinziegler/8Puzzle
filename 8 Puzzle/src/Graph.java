@@ -1,18 +1,19 @@
-//import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-/*
-    Graph that will have puzzle states as nodes. Can use A* and bream searches
-        NOTE: each node should have its state represented by a string. Finding the goal state is easy this way,
-        memory is saved.
-*/
 public class Graph {
-    
+
     // Node Class
-    private class Node implements Comparable<Node> {    // holds a state, and a list of edges, also holds the heuristic cost
+    private class Node extends Object implements Comparable<Node> {     // graph node
+        // Node Constructor
+        private Node(String state, String move, int gCost, Node parent) {
+            this.state = state;
+            this.move = move;
+            this.gCost = gCost;
+            this.parent = parent;
+        }
+
         private int hCost;      // heuristic cost for this node
         private int gCost;      // total cost to get here from initial state.
         private int fCost;      // h + g
@@ -24,32 +25,25 @@ public class Graph {
         private void calcHeuristic() {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(this.state);
-
-            this.hCost = puzzle.heuristic2();
+            this.hCost = puzzle.heuristic1();
             this.fCost = this.hCost + this.gCost;
-        }
-        
-        private Node(String state, String move, int gCost, Node parent) {
-            this.state = state;
-            this.move = move;
-            this.gCost = gCost;
-            this.parent = parent;
         }
 
         @Override
-        public int compareTo(Graph.Node o) {
-            if(this.fCost < o.fCost) {
+        public int compareTo(Graph.Node o) { // used by priority queue.
+            if (this.fCost < o.fCost) {
                 return -1;
             }
-            if(this.fCost > o.fCost) {
+            if (this.fCost > o.fCost) {
                 return 1;
             }
             return 0;
         }
 
-        @Override
-        public boolean equals(Graph.Node o) {
-            if(this.gCost == o.gCost && this.state.equals(o.state)) {
+        // same state --- compare node states.
+        public boolean sameState(Node n) {
+            n = (Node) n;
+            if (this.state.equals(n.state)) {
                 return true;
             }
             return false;
@@ -57,7 +51,7 @@ public class Graph {
     }
 
     // Edge Class
-    private class Edge {    // holds a cost, endNode, and startNode
+    private class Edge { // holds a cost, endNode, and startNode
         private Node startNode;
         private Node endNode;
 
@@ -77,7 +71,6 @@ public class Graph {
     }
 
     private Node rootNode;
-//  private NPuzzle puzzle;
     private int maxNodes;
     private String heuristic;
     private String goalState = "b12 345 678 ";
@@ -87,14 +80,14 @@ public class Graph {
         this.maxNodes = n;
     }
 
-    // add edge
+    // addEdge
     private void addEdge(Node n1, Node n2) {
-        n1.edges.add(new Edge(n1,n2));
+        n1.edges.add(new Edge(n1, n2));
     }
 
     // for commandReader to call.
     public void solve(String alg) {
-        switch(alg) {
+        switch (alg) {
             case "A-star":
                 this.aStar();
                 break;
@@ -107,78 +100,59 @@ public class Graph {
     }
 
     // A-Star
-    /*
-        1. Add root to frontier, then loop...
-
-        while(!frontier.isEmpty()) {
-            currNode = frontier.poll;
-            if currNode.isGoal
-                return
-            explored.add(currNode);
-
-            forEach n in curr{
-                if explored.contains(n)
-                    continue
-                cost = curr.gCost + 1;
-                if n in Frontier and cost < g(n)
-                    remove n from frontier. // new path is better anyway.
-                if n in explored and cost < n.gCost()
-                    remove n from explored
-                if n not in frontier and n not in explored
-                    frontier.add(n)
-                    n.gCost = cost
-                    n.calcHeuristic()
-            }
-        }
-
-    */
-    public void aStar() {
-        PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // could use hash table and prio queue together for better performance
-        Hashtable<String, Node> explored = new Hashtable<String, Node>();  // list of explored STATES not nodes.
+    private void aStar() {
+        PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // states to be explored.
+        LinkedList<Node> explored = new LinkedList<Node>();         // already explored states.
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
         System.out.println("Solving from state: " + this.rootNode.state);
-        while(!frontier.isEmpty()) {
+        while (!frontier.isEmpty()) {
+
             Node curr = frontier.poll();
             if (curr.state.equals(this.goalState)) {
                 System.out.println("Reached Goal after " + nodesExplored + " nodes explored.");
                 this.printPath(curr);
                 return;
             }
-            explored.put(curr.state, curr);
+
+            explored.add(curr);
+
             nodesExplored++;
-            if(this.maxNodes > 0 && this.maxNodes < nodesExplored) {
+            if (this.maxNodes > 0 && this.maxNodes < nodesExplored) {
                 System.out.println("Max number of nodes searched (" + this.maxNodes + ").");
                 return;
             }
 
-            this.expand(curr);
-            Iterator<Edge> iterator = curr.edges.iterator();
-            while(iterator.hasNext()) {
-                Node n = iterator.next().endNode;
-                n.calcHeuristic();
-                if(explored.contains(n)) {
-                    System.out.println("explored contains n");
-                    continue;
-                }
-                int cost = curr.gCost + 1;
+            this.expand(curr);  // branch
 
+            Iterator<Edge> iterator = curr.edges.iterator();    // for each node connected to curr.....
+            while (iterator.hasNext()) {
+                Node n = iterator.next().endNode;
+
+                n.calcHeuristic();
+
+                int cost = curr.fCost + 1;
+
+                // check for a copy of n in explored. If exists: If copy's path is longer than current path, remove copy from explored.
+                Node eSame = this.getEqualNode(explored, n);
+                if (explored.contains(eSame)) {
+                    if (cost < eSame.fCost) {
+                        explored.remove(eSame);
+                    } else {
+                        continue;
+                    }
+                }
+
+                // check for a copy of n in the frontier. If exists, and its path cost is longer than the current path cost, remove the longer state.
                 Node same = this.getNodeWithSameState(frontier, n);
-                if(cost < n.gCost && frontier.contains(same)) {
-                    //System.out.println("2");
-                    frontier.remove(same);  // new path is better
+                if (cost < same.fCost && frontier.contains(same)) {
+                    frontier.remove(same); 
                 }
-                if(explored.contains(n) && cost < n.gCost) { // EXPERIMENTAL
-                    //System.out.println("3");
-                    explored.remove(n.state);
-                }
-                if(!frontier.contains(same) && !explored.contains(n)) {
-                    //System.out.println("4");
-                    n.calcHeuristic();
+
+                // n was not in frontier, and was not previously explored. add it to frontier.
+                if (!frontier.contains(same) && !explored.contains(eSame)) {
                     frontier.add(n);
-                    //n.gCost = cost; // huh?
-                    
                 }
             }
         }
@@ -188,55 +162,68 @@ public class Graph {
 
     }
 
-    // expand a node
+    // expand a node -- Helper for A*
     private void expand(Node curr) {
-        String[] moveList = new String[]{"right", "down", "left", "up"};
+        String[] moveList = new String[] { "right", "down", "left", "up" };
 
-        for(int i = 0; i < moveList.length; i++) {
+        for (int i = 0; i < moveList.length; i++) {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(curr.state);
             boolean valid = puzzle.move(moveList[i]);
 
-            if(valid) { // if the move was legal.
+            if (valid) { // if the move was legal.
                 String newState = puzzle.getState();
                 this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + 1, curr));
             }
         }
     }
 
-    // looks throught the frontier and returns a node with a state matching that of n.
+    // looks through the frontier and returns a node with a state matching that of
+    // n. --- helper for A*
     private Node getNodeWithSameState(PriorityQueue<Node> frontier, Node n) {
         Iterator<Node> iterator = frontier.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Node curr = iterator.next();
-            if(curr.state.equals(n.state)) {
+            if (curr.state.equals(n.state)) {
                 return curr;
             }
         }
         return new Node("", "", 0, null); // impossible to exist in frontier.
     }
 
-    // printpath
+    // printpath --- helper for A*
     private void printPath(Node end) {
         System.out.println("Solution Path:");
         Node curr = end;
         LinkedList<String> moveList = new LinkedList<String>();
-        while(curr.parent != null) {
+        while (curr.parent != null) {
             moveList.addFirst(curr.move);
             curr = curr.parent;
         }
         String move;
         Iterator<String> iterator = moveList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             move = iterator.next();
             System.out.print(move);
             System.out.print(" ");
         }
+        System.out.print("(" + moveList.size() + " moves)\n");
+    }
+
+    // helper for A*
+    private Node getEqualNode(LinkedList<Node> explored, Node n) {
+        Iterator<Node> iterator = explored.iterator();
+        while (iterator.hasNext()) {
+            Node curr = iterator.next();
+            if (curr.sameState(n)) {
+                return curr;
+            }
+        }
+        return new Node("", "", 0, null); // impossible to exist in frontier.
     }
 
     // Beam Search
     public void beam() {
 
     }
-
 }
