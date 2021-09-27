@@ -83,12 +83,12 @@ public class CommandReader {
 
     // read through the commands in text file, and perform them.
     public static void main(String[] args) {
+        CommandReader reader = new CommandReader("D:\\commands.txt");
+        String heuristic = "h1";
 
         NPuzzle puzzle = new NPuzzle(8);
-        CommandReader reader = new CommandReader("D:\\commands.txt");
         int maxNodes = 200;
         Graph pGraph;
-        String heuristic = "h1";
 
         boolean loop = true;
         while (loop) {              //use a switch statement to perform the commands.
