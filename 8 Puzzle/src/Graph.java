@@ -22,6 +22,7 @@ public class Graph {
         private Node parent;    // parent of node.
         private LinkedList<Edge> edges = new LinkedList<Edge>();
 
+        // calculate the heuristic using an input heuristic method
         private void calcHeuristic(String h) {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(this.state);
@@ -31,6 +32,9 @@ public class Graph {
             }
             else if(h.equals("h2")) {
                 this.hCost = puzzle.heuristic2();
+            }
+            else {
+                throw new Error("Invalid heuristic input");
             }
             this.fCost = this.hCost + this.gCost;
         }

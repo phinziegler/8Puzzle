@@ -6,9 +6,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-/*
-    This class reads input from a text file and performs commands based on this input.
-*/
+// This class reads input from a text file and performs commands based on this input.
 public class CommandReader {
 
     private String filePath;
@@ -75,12 +73,9 @@ public class CommandReader {
         command = comBuilder.toString();
         input = inBuilder.toString();
 
-        //System.out.println("command: " + command + "\nmodifier: " + input);
-
         String[] output = {command, input};
         return output;
     }
-
 
     ////////////
     /// MAIN /// 
