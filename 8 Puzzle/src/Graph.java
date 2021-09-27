@@ -43,15 +43,6 @@ public class Graph {
                 default:
                     throw new Error("Invalid heuristic input \'" + h + "\'.");
             }
-            // if(h.equals("h1")) {
-            //     this.hCost = puzzle.heuristic1();
-            // }
-            // else if(h.equals("h2")) {
-            //     this.hCost = puzzle.heuristic2();
-            // }
-            // else {
-            //     throw new Error("Invalid heuristic input");
-            // }
             this.fCost = this.hCost + this.gCost;
         }
 
