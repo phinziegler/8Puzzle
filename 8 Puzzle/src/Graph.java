@@ -38,7 +38,6 @@ public class Graph {
             }
             this.fCost = this.hCost + this.gCost;
         }
-        
 
         @Override
         public int compareTo(Graph.Node o) { // used by priority queue.
