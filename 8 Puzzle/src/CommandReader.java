@@ -93,6 +93,7 @@ public class CommandReader {
         CommandReader reader = new CommandReader("D:\\commands.txt");
         int maxNodes = 200;
         Graph pGraph;
+        String heuristic = "h1";
 
         boolean loop = true;
         while (loop) {              //use a switch statement to perform the commands.
@@ -117,12 +118,17 @@ public class CommandReader {
                     puzzle.randomizeState(Integer.parseInt(input));
                     break;
                 case "solve":
-                    pGraph = new Graph(puzzle, maxNodes, "h1");
+                    pGraph = new Graph(puzzle, maxNodes, heuristic);
                     pGraph.solve(input);
-                    //pGraph.solve(input);
                     break;
                 case "maxNodes":
                     maxNodes = (Integer.parseInt(input));
+                    break;
+                case "heuristic":
+                    heuristic = input;
+                    break;
+                case "blank":
+                    System.out.println("");
                     break;
                 default:
                     loop = false;

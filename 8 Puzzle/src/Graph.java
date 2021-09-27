@@ -22,12 +22,19 @@ public class Graph {
         private Node parent;    // parent of node.
         private LinkedList<Edge> edges = new LinkedList<Edge>();
 
-        private void calcHeuristic() {
+        private void calcHeuristic(String h) {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(this.state);
-            this.hCost = puzzle.heuristic1();
+
+            if(h.equals("h1")) {
+                this.hCost = puzzle.heuristic1();
+            }
+            else if(h.equals("h2")) {
+                this.hCost = puzzle.heuristic2();
+            }
             this.fCost = this.hCost + this.gCost;
         }
+        
 
         @Override
         public int compareTo(Graph.Node o) { // used by priority queue.
@@ -65,7 +72,7 @@ public class Graph {
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
         this.rootNode.gCost = 0;
-        this.rootNode.calcHeuristic();
+        this.rootNode.calcHeuristic(heuristic);
         this.maxNodes = maxNodes;
         this.heuristic = heuristic;
     }
@@ -106,7 +113,7 @@ public class Graph {
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
-        System.out.println("Solving from state: " + this.rootNode.state);
+        System.out.println("Solving from state " + this.rootNode.state + " with heuristic " + "\'" + this.heuristic + "\'.");
         while (!frontier.isEmpty()) {
 
             Node curr = frontier.poll();
@@ -130,7 +137,7 @@ public class Graph {
             while (iterator.hasNext()) {
                 Node n = iterator.next().endNode;
 
-                n.calcHeuristic();
+                n.calcHeuristic(this.heuristic);
 
                 int cost = curr.fCost + 1;
 
