@@ -163,6 +163,10 @@ public class NPuzzle {
 	/// HEURISTICS CALCULATION /// 
 	//////////////////////////////
 
+	public int heuristic0() {
+		return 0;
+	}
+
 	public int heuristic1() {	// number of misplaced tiles.
 		int sum = 0;
 		for(int r = 0; r < this.state.length; r++) {
@@ -203,6 +207,9 @@ public class NPuzzle {
 		int goodCol = val % this.state.length;
 		int dist = Math.abs(r - goodRow) + Math.abs(c - goodCol);
 		return dist;
+	}
+	public int heuristic3() {
+		return (this.heuristic2()/2);
 	}
 }
 

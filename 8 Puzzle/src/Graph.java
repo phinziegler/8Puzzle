@@ -27,15 +27,31 @@ public class Graph {
             NPuzzle puzzle = new NPuzzle(8);
             puzzle.setState(this.state);
 
-            if(h.equals("h1")) {
-                this.hCost = puzzle.heuristic1();
+            switch(h) {
+                case "h0":
+                    this.hCost = puzzle.heuristic0();
+                    break;
+                case "h1":
+                    this.hCost = puzzle.heuristic1();
+                    break;
+                case "h2":
+                    this.hCost = puzzle.heuristic2();
+                    break;
+                case "h3":
+                    this.hCost = puzzle.heuristic3();
+                    break;
+                default:
+                    throw new Error("Invalid heuristic input \'" + h + "\'.");
             }
-            else if(h.equals("h2")) {
-                this.hCost = puzzle.heuristic2();
-            }
-            else {
-                throw new Error("Invalid heuristic input");
-            }
+            // if(h.equals("h1")) {
+            //     this.hCost = puzzle.heuristic1();
+            // }
+            // else if(h.equals("h2")) {
+            //     this.hCost = puzzle.heuristic2();
+            // }
+            // else {
+            //     throw new Error("Invalid heuristic input");
+            // }
             this.fCost = this.hCost + this.gCost;
         }
 
