@@ -84,7 +84,8 @@ public class CommandReader {
     // read through the commands in text file, and perform them.
     public static void main(String[] args) {
         CommandReader reader = new CommandReader("D:\\commands.txt");
-        String heuristic = "h1";
+        String heuristic = "h1";    // default heuristic (# displaced tiles).
+                                    // use manhattan distance by typing "heuristic h2" in the command file.
 
         NPuzzle puzzle = new NPuzzle(8);
         int maxNodes = 200;
@@ -97,6 +98,10 @@ public class CommandReader {
             String input = line[1];
 
             switch (command) {
+                case "//":  // ability to add comments in command doc (NOT inline with other commands)
+                    break;
+                case ".":   // ability to format spacing between commands (blank lines not supported)
+                    break;
                 case "setState":
                     puzzle.setState(input);
                     break;
@@ -122,7 +127,7 @@ public class CommandReader {
                 case "heuristic":
                     heuristic = input;
                     break;
-                case "blank":
+                case "blank":   //adds a blank line in console output.
                     System.out.println("");
                     break;
                 default:
