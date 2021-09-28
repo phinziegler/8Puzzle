@@ -1,5 +1,6 @@
-setStatus b12345678
+setState b12345678
 randomizeState 5000
+maxNodes 30000
 .
 heuristic h1
 solve A-star
