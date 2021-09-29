@@ -141,7 +141,7 @@ public class Graph {
 
             nodesExplored++;
             if (this.maxNodes > 0 && this.maxNodes < nodesExplored) {
-                System.out.println("Max number of nodes searched (" + this.maxNodes + ").");
+                System.out.println("Error: Max number of nodes searched (" + this.maxNodes + ").");
                 return;
             }
 
