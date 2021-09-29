@@ -114,6 +114,12 @@ public class Graph {
         }
     }
 
+
+    /////////////////////////
+    /// SEARCH ALGORITHMS ///
+    /////////////////////////
+    
+
     // A-Star
     private void aStar() {
         PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // states to be explored.
