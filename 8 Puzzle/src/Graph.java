@@ -88,6 +88,7 @@ public class Graph {
     private Node rootNode;
     private int maxNodes;
     private String heuristic;
+    private int moveCost = 2;
     private String goalState = "b12 345 678 ";
 
     // maxNodes --- set max nodes to travel
@@ -153,7 +154,7 @@ public class Graph {
 
                 n.calcHeuristic(this.heuristic);
 
-                int cost = curr.fCost + 1;
+                int cost = curr.fCost + this.moveCost;
 
                 // check for a copy of n in explored. If exists: If copy's path is longer than current path, remove copy from explored.
                 Node eSame = this.getEqualNode(explored, n);
@@ -194,7 +195,7 @@ public class Graph {
 
             if (valid) { // if the move was legal.
                 String newState = puzzle.getState();
-                this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + 1, curr));
+                this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + this.moveCost, curr));
             }
         }
     }
