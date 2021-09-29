@@ -256,18 +256,17 @@ public class Graph {
     // only add to the frontier if it is one of the best candidates
 
     /* 
-        start at root node.
+        best.add(rootNode)  // CAPPED PRIORITY QUEUE, WHERE IT HOLDS A MAX OF K ELEMENTS
 
-        for each beam {
-            expand currNode
+        while(!frontier.isEmpty())
+            foreach nodes in best
+                expand(n)
+                foreach n in nodes
+                    testNodes.add(n)    
+                .
+            .
+        .
 
-            newStates;
-            for each n in endNode {
-                newStates.add(n)
-            }
-
-            for n in newStates
-        }
     */
     public void beam() {
 
