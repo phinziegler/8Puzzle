@@ -69,13 +69,17 @@ public class Graph {
 
     // Edge Class
     private class Edge { // holds a cost, endNode, and startNode
-        private Node startNode;
         private Node endNode;
 
-        private Edge(Node start, Node end) {
-            this.startNode = start;
+        private Edge(Node end) {
             this.endNode = end;
         }
+    }
+
+    // used by Beam search. A k holds a state that it currently holds, as well as the path to get to this point.
+    private class Beam {
+        private LinkedList<String> moves = new LinkedList<String>();
+        private Node currNode;
     }
 
     // Graph Constructor
@@ -90,6 +94,7 @@ public class Graph {
     private Node rootNode;
     private int maxNodes;
     private String heuristic;
+    private int moveCost = 2;
     private String goalState = "b12 345 678 ";
 
     // maxNodes --- set max nodes to travel
@@ -99,7 +104,7 @@ public class Graph {
 
     // addEdge
     private void addEdge(Node n1, Node n2) {
-        n1.edges.add(new Edge(n1, n2));
+        n1.edges.add(new Edge(n2));
     }
 
     // for commandReader to call.
@@ -115,6 +120,12 @@ public class Graph {
                 System.out.println(new Exception("Invalid modifier for 'solve' command"));
         }
     }
+
+
+    /////////////////////////
+    /// SEARCH ALGORITHMS ///
+    /////////////////////////
+    
 
     // A-Star
     private void aStar() {
@@ -137,7 +148,7 @@ public class Graph {
 
             nodesExplored++;
             if (this.maxNodes > 0 && this.maxNodes < nodesExplored) {
-                System.out.println("Max number of nodes searched (" + this.maxNodes + ").");
+                System.out.println("Error: Max number of nodes searched (" + this.maxNodes + ").");
                 return;
             }
 
@@ -149,7 +160,7 @@ public class Graph {
 
                 n.calcHeuristic(this.heuristic);
 
-                int cost = curr.fCost + 1;
+                int cost = curr.fCost + this.moveCost;
 
                 // check for a copy of n in explored. If exists: If copy's path is longer than current path, remove copy from explored.
                 Node eSame = this.getEqualNode(explored, n);
@@ -190,7 +201,7 @@ public class Graph {
 
             if (valid) { // if the move was legal.
                 String newState = puzzle.getState();
-                this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + 1, curr));
+                this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + this.moveCost, curr));
             }
         }
     }
@@ -240,23 +251,24 @@ public class Graph {
     }
 
     // Beam Search
-    // The evaluation function will simply be H1, H2, or H3. H2 and H3 should not change
-    // beam's performance.
 
-    /*
+    // beam search is A* with a fixed frontier.
+    // only add to the frontier if it is one of the best candidates
 
-    Node[] kStates;
-    kStates.add(rootNode)
+    /* 
+        start at root node.
 
-    while(evaluation > 0) {
+        for each beam {
+            expand currNode
 
-        forEach(n in kStates) {
-            
+            newStates;
+            for each n in endNode {
+                newStates.add(n)
+            }
+
+            for n in newStates
         }
-    }
-
     */
-
     public void beam() {
 
     }
