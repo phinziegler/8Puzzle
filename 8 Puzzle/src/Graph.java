@@ -69,11 +69,9 @@ public class Graph {
 
     // Edge Class
     private class Edge { // holds a cost, endNode, and startNode
-        private Node startNode;
         private Node endNode;
 
-        private Edge(Node start, Node end) {
-            this.startNode = start;
+        private Edge(Node end) {
             this.endNode = end;
         }
     }
@@ -99,7 +97,7 @@ public class Graph {
 
     // addEdge
     private void addEdge(Node n1, Node n2) {
-        n1.edges.add(new Edge(n1, n2));
+        n1.edges.add(new Edge(n2));
     }
 
     // for commandReader to call.
