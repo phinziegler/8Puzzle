@@ -78,10 +78,12 @@ public class CommandReader {
         return output;
     }
 
+
     ////////////
     /// MAIN /// 
     ////////////
 
+    
     // read through the commands in text file, and perform them.
     public static void main(String[] args) {
         CommandReader reader = new CommandReader("D:\\Documents\\Coding\\Java\\VSCode 8 Puzzle\\8 Puzzle\\commands.txt");   // enter filepath here.
