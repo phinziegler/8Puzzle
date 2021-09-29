@@ -141,7 +141,7 @@ public class Graph {
                 return;
             }
 
-            this.expand(curr);  // branch
+            this.expand(curr);  // branch --- creates 2,3, or 4 child nodes depending on the location of b.
 
             Iterator<Edge> iterator = curr.edges.iterator();    // for each node connected to curr.....
             while (iterator.hasNext()) {
@@ -240,6 +240,23 @@ public class Graph {
     }
 
     // Beam Search
+    // The evaluation function will simply be H1, H2, or H3. H2 and H3 should not change
+    // beam's performance.
+
+    /*
+
+    Node[] kStates;
+    kStates.add(rootNode)
+
+    while(evaluation > 0) {
+
+        forEach(n in kStates) {
+            
+        }
+    }
+
+    */
+
     public void beam() {
 
     }
