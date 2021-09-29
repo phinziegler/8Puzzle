@@ -123,7 +123,7 @@ public class Graph {
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
-        System.out.println("Solving from state " + this.rootNode.state + " with heuristic " + "\'" + this.heuristic + "\'.");
+        System.out.println("Solving from state " + this.rootNode.state + "with heuristic " + "\'" + this.heuristic + "\'.");
         while (!frontier.isEmpty()) {
 
             Node curr = frontier.poll();

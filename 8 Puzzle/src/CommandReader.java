@@ -84,10 +84,9 @@ public class CommandReader {
 
     // read through the commands in text file, and perform them.
     public static void main(String[] args) {
-        CommandReader reader = new CommandReader("C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt");   // enter filepath here.
+        CommandReader reader = new CommandReader("D:\\Documents\\Coding\\Java\\VSCode 8 Puzzle\\8 Puzzle\\commands.txt");   // enter filepath here.
         String heuristic = "h1";    // default heuristic (# displaced tiles).
                                     // use manhattan distance by typing "heuristic h2" in the command file.
-
         NPuzzle puzzle = new NPuzzle(8);
         int maxNodes = 10000;       // default value
         Graph pGraph;
@@ -128,7 +127,7 @@ public class CommandReader {
                 case "heuristic":
                     heuristic = input;
                     break;
-                case "blank":   //adds a blank line in console output.
+                case "blank":   // adds a blank line in console output.
                     System.out.println("");
                     break;
                 default:
