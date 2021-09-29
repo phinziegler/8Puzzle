@@ -76,6 +76,12 @@ public class Graph {
         }
     }
 
+    // used by Beam search. A k holds a state that it currently holds, as well as the path to get to this point.
+    private class Beam {
+        private LinkedList<String> moves = new LinkedList<String>();
+        private Node endNode;
+    }
+
     // Graph Constructor
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
@@ -245,6 +251,26 @@ public class Graph {
     }
 
     // Beam Search
+
+    // beam search is A* with a fixed frontier.
+    // only add to the frontier if it is one of the best candidates
+
+    /*  create k beams
+
+        start at root node.
+
+        for each beam {
+            expand endNode.
+            best = endNode
+            for each n in endNode {
+                if n.cost < best.cost
+                    best = n
+            }
+            if best.euqals(endNode) // stuck at local min
+                give up.
+            path.add(best.move)
+        }
+    */
     public void beam() {
 
     }
