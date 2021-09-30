@@ -207,7 +207,6 @@ public class Graph {
             boolean valid = puzzle.move(moveList[i]);
 
             if (valid) { // if the move was legal.
-                //System.out.println("move " + moveList[i] + " at pos " + curr.state +"was valid");
                 String newState = puzzle.getState();
                 this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + this.moveCost, curr));
             }

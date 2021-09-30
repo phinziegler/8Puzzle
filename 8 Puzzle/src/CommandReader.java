@@ -30,7 +30,6 @@ public class CommandReader {
         }
 
         String output = stringBuilder.toString();
-        //System.out.println(output);
 		return output;
 	}
 
