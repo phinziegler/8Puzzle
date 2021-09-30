@@ -6,9 +6,10 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-// This class reads input from a text file and performs commands based on this input.
+// COMMAND READER --- reads from a text file input in main. --- CONTAINS THE MAIN FUNCTION
 public class CommandReader {
 
+    // PRIVATE VARIABLES
     private String filePath;
     private LinkedList<String> commandList = new LinkedList<String>();
 
@@ -18,7 +19,7 @@ public class CommandReader {
 
     }
 
-    // readTxt --- turns the txt file at filepath into a string.
+    // READ TXT --- turns the txt file at filepath into a string.
     private String readTxt() {
 		StringBuilder stringBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(this.filePath), StandardCharsets.UTF_8)){
@@ -33,7 +34,7 @@ public class CommandReader {
 		return output;
 	}
 
-    // generateCommandList --- turns the input text into linked list where each element is a full line.
+    // GENERATE COMMAND LIST --- turns the input text into linked list where each element is a full line.
     private LinkedList<String> generateCommandList(String text) {
         LinkedList<String> list = new LinkedList<String>();
         Scanner scanner = new Scanner(text);    // reads the string.
@@ -47,7 +48,7 @@ public class CommandReader {
         return list;
     }
 
-    // getCommand --- returns a string array where the first element is the command, and the second is the input.
+    // GET COMMAND --- returns a string array where the first element is the command, and the second is the input.
     public String[] getCommand() {
         if (this.commandList.size() <= 0) {     // return blank when no commands are left.
             return new String[]{"",""};
@@ -79,23 +80,26 @@ public class CommandReader {
     }
 
 
-    ////////////
-    /// MAIN /// 
-    ////////////
+    ///////////////////
+    /// MAIN METHOD /// 
+    ///////////////////
 
-    
-    // read through the commands in text file, and perform them.
+
+
     public static void main(String[] args) {
-        CommandReader reader = new CommandReader("C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt");   // enter filepath here.
-        String heuristic = "h1";    // default heuristic (# displaced tiles).
-                                    // use manhattan distance by typing "heuristic h2" in the command file.
-        int k = 10;
+
+        String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";
+        String heuristic = "h2";    // default heuristic (# displaced tiles).
+        int k = 10;                 // default value for k
+        int maxNodes = 10000;       // default value for maxnodes
+        
+        CommandReader reader = new CommandReader(filePath);
         NPuzzle puzzle = new NPuzzle(8);
-        int maxNodes = 10000;       // default value
         Graph pGraph;
 
         boolean loop = true;
-        while (loop) {              //use a switch statement to perform the commands.
+        while (loop) {
+
             String[] line = reader.getCommand();
             String command = line[0];
             String input = line[1];
@@ -103,7 +107,7 @@ public class CommandReader {
             switch (command) {
                 case "//":  // ability to add comments in command doc (NOT inline with other commands)
                     break;
-                case ".":   // ability to format spacing between commands (blank lines not supported)
+                case ".":   // ability to format spacing between commands
                     break;
                 case "setState":
                     puzzle.setState(input);
@@ -111,7 +115,7 @@ public class CommandReader {
                 case "printState":
                     puzzle.printState();
                     break;
-                case "printIntState":
+                case "printIntState":   // visual output of current state
                     puzzle.printIntState();
                     break;
                 case "move":
@@ -127,10 +131,10 @@ public class CommandReader {
                 case "maxNodes":
                     maxNodes = (Integer.parseInt(input));
                     break;
-                case "heuristic":
+                case "heuristic":   // change the heuristic used... accepts h0, h1, h2, h3
                     heuristic = input;
                     break;
-                case "setK":
+                case "setK":    // change k value for beam search
                     k = Integer.parseInt(input);
                 case "blank":   // adds a blank line in console output.
                     System.out.println("");

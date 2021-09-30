@@ -2,6 +2,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+
+// GRAPH CLASS.
 public class Graph {
 
     // NODE CLASS
@@ -261,20 +263,23 @@ public class Graph {
                 return curr;
             }
         }
-        return new Node("", "", 0, null); // impossible to exist in frontier.
+        return new Node("", "", 0, null); // impossible to exist in a frontier.
     }
 
     // LOCAL BEAM SEARCH
     public void beam(int k) {
-        System.out.println("Beam search with k = " + k + " from state " + this.rootNode.state + ": ");
-        LinkedList<Node> bestNodes = new LinkedList<Node>();
-        LinkedList<Node> explored = new LinkedList<Node>();
+        LinkedList<Node> bestNodes = new LinkedList<Node>();    // list of current k best
+        LinkedList<Node> explored = new LinkedList<Node>();     // list of all explored nodes
+
         bestNodes.add(this.rootNode);
         int nodesSearched = 0;
+        
+        System.out.println("Beam search with k = " + k + " from state " + this.rootNode.state + ": ");
 
-        while(true) {
-            PriorityQueue<Node> allNodes = new PriorityQueue<Node>();
-            LinkedList<Node> testNodes = new LinkedList<Node>();
+        while(true) {       // repeats until stuck at local min, found state, or maxnodes reached
+
+            PriorityQueue<Node> sortNodes = new PriorityQueue<Node>();  // sorted list of testNodes
+            LinkedList<Node> testNodes = new LinkedList<Node>();        // newly found nodes
 
             Iterator<Node> besterator = bestNodes.iterator();
 
@@ -296,7 +301,7 @@ public class Graph {
                     return;
                 }
 
-                // EXPAND CURRENT NODE -- ADD CURRENT NODE TO EXPLORED
+                // EXPAND CURRENT NODE -- also add current node to explored
                 this.expand(curr);
                 explored.add(curr);
 
@@ -314,19 +319,19 @@ public class Graph {
                 }
             }
 
-            // STUCK AT LOCAL MIN --- FAIL CONDITION
+            // STUCK AT LOCAL MIN --- fail condition
             if(testNodes.size() == 0) {
                 System.out.println("Error: all beams stuck at local min.");
                 return;
             }
 
-            allNodes.addAll(testNodes);     // ALLNODES IS A PRIORITY QUEUE. IT SORTS THE TEST NODES BY VALUE.
+            sortNodes.addAll(testNodes);
             
-            // ADD K NODES FROM ALLNODES TO BEST --- BECAUSE ALLNODES IS SORTED, THIS PUTS THE K LOWEST VALUE NODES IN BEST.
+            // ADD K NODES FROM SORTNODES TO BEST --- THIS PUTS THE K LOWEST VALUE NODES IN BEST.
             int i = 0;
             bestNodes.clear();
-            while(!allNodes.isEmpty() && i < k) {
-                bestNodes.add(allNodes.poll());
+            while(!sortNodes.isEmpty() && i < k) {
+                bestNodes.add(sortNodes.poll());
                 i++;
             }
         }

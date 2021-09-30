@@ -1,4 +1,5 @@
 
+// NPUZZLE CLASS
 public class NPuzzle {
 
 	// POINTER CLASS --- Npuzzle holds the location of its blank spot in a pointer.
@@ -162,7 +163,7 @@ public class NPuzzle {
 	/// HEURISTICS CALCULATION /// 
 	//////////////////////////////
 
-	
+
 	// H0 --- NO HEURISTIC --- returns 0 always.
 	public int heuristic0() {
 		return 0;
