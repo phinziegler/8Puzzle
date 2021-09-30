@@ -77,17 +77,19 @@ public class Graph {
     }
 
     // Graph Constructor
-    public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
+    public Graph(NPuzzle puzzle, int maxNodes, String heuristic, int k) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
         this.rootNode.gCost = 0;
         this.rootNode.calcHeuristic(heuristic);
         this.maxNodes = maxNodes;
         this.heuristic = heuristic;
+        this.k = k;
     }
 
     private Node rootNode;
     private int maxNodes;
     private String heuristic;
+    private int k;
     private int moveCost = 2;
     private String goalState = "b12 345 678 ";
 
@@ -108,7 +110,7 @@ public class Graph {
                 this.aStar();
                 break;
             case "beam":
-                this.beam(10);
+                this.beam(this.k);
                 break;
             default:
                 System.out.println(new Exception("Invalid modifier for 'solve' command"));
@@ -128,7 +130,7 @@ public class Graph {
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
-        System.out.println("Solving from state " + this.rootNode.state + "with heuristic " + "\'" + this.heuristic + "\'.");
+        System.out.println("A* search from state " + this.rootNode.state + "with heuristic " + "\'" + this.heuristic + "\'.");
         while (!frontier.isEmpty()) {
 
             Node curr = frontier.poll();
@@ -204,16 +206,16 @@ public class Graph {
 
     // // looks through the frontier and returns a node with a state matching that of
     // // n. --- helper for A*
-    // private Node getNodeWithSameState(LinkedList<Node> frontier, Node n) {
-    //     Iterator<Node> iterator = frontier.iterator();
-    //     while (iterator.hasNext()) {
-    //         Node curr = iterator.next();
-    //         if (curr.state.equals(n.state)) {
-    //             return curr;
-    //         }
-    //     }
-    //     return new Node("", "", 0, null); // impossible to exist in frontier.
-    // }
+    private Node getNodeWithSameState(LinkedList<Node> testNodes, Node n) {
+        Iterator<Node> iterator = testNodes.iterator();
+        while (iterator.hasNext()) {
+            Node curr = iterator.next();
+            if (curr.sameState(n)) {
+                return curr;
+            }
+        }
+        return new Node("", "", 0, null); // impossible to exist in frontier.
+    }
     private Node getNodeWithSameState(PriorityQueue<Node> frontier, Node n) {
         Iterator<Node> iterator = frontier.iterator();
         while (iterator.hasNext()) {
@@ -288,7 +290,7 @@ public class Graph {
 
     */
     public void beam(int k) {
-        System.out.println("Solving from state " + this.rootNode.state + ": ");
+        System.out.println("Beam search with k = " + k + " from state " + this.rootNode.state + ": ");
 
         LinkedList<Node> bestNodes = new LinkedList<Node>();
         //LinkedList<Node> prevBest = new LinkedList<Node>();
@@ -300,11 +302,15 @@ public class Graph {
         while(true) {
             PriorityQueue<Node> allNodes = new PriorityQueue<Node>();
             LinkedList<Node> testNodes = new LinkedList<Node>();
+            testNodes.clear();
+
+            System.out.print("List: ");
+            this.printList(bestNodes);
 
             Iterator<Node> besterator = bestNodes.iterator();
             while(besterator.hasNext()) {
                 Node curr = besterator.next();
-                //System.out.println("curr = " + curr.state);
+                //System.out.println("curr = " + curr.state + " f value = " + curr.fCost);
                 nodesSearched++;
 
                 if(curr.state.equals(this.goalState)) {
@@ -321,16 +327,22 @@ public class Graph {
                     return;
                 }
 
-                //prevBest = bestNodes;
                 this.expand(curr);
 
+                Node same1 = getNodeWithSameState(testNodes, curr);
+                if(!testNodes.contains(same1)) {
+                    testNodes.add(curr);
+                }
+
                 Iterator<Edge> edgeit = curr.edges.iterator();
-                //System.out.println(curr.edges.size());
                 while(edgeit.hasNext()) {
                     Node n = edgeit.next().endNode;
-                    this.evaluate(n);           // assign a value to n
+                    this.evaluate(n);
 
-                    testNodes.add(n);           // we want to know if these nodes are better than any of the 
+                    Node same2 = getNodeWithSameState(testNodes, n);
+                    if(!testNodes.contains(same2)) {
+                        testNodes.add(n); 
+                    }
                 }
             }
 
@@ -349,6 +361,15 @@ public class Graph {
 
             //System.out.println("bestNodes = " + bestNodes.size());
         }
+    }
+
+    private void printList(LinkedList<Node> list) {
+        Iterator<Node> it = list.iterator();
+        while(it.hasNext()) {
+            Node curr = it.next();
+            System.out.print(curr.state + "F(n) = " + curr.fCost + " | ");
+        }
+        System.out.print("\n");
     }
 
     // the evaluation function for beam

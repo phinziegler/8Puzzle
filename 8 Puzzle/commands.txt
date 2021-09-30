@@ -1,4 +1,5 @@
-maxNodes 500
+blank
+maxNodes 50
 .
 setState b14 352 678
 // randomizeState 10
@@ -8,4 +9,6 @@ solve A-star
 .
 blank
 .
+setK 3
 solve beam
+blank

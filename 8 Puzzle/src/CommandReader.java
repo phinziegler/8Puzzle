@@ -89,6 +89,7 @@ public class CommandReader {
         CommandReader reader = new CommandReader("D:\\Documents\\Coding\\Java\\VSCode 8 Puzzle\\8 Puzzle\\commands.txt");   // enter filepath here.
         String heuristic = "h1";    // default heuristic (# displaced tiles).
                                     // use manhattan distance by typing "heuristic h2" in the command file.
+        int k = 10;
         NPuzzle puzzle = new NPuzzle(8);
         int maxNodes = 10000;       // default value
         Graph pGraph;
@@ -120,7 +121,7 @@ public class CommandReader {
                     puzzle.randomizeState(Integer.parseInt(input));
                     break;
                 case "solve":
-                    pGraph = new Graph(puzzle, maxNodes, heuristic);
+                    pGraph = new Graph(puzzle, maxNodes, heuristic, k);
                     pGraph.solve(input);
                     break;
                 case "maxNodes":
@@ -129,6 +130,8 @@ public class CommandReader {
                 case "heuristic":
                     heuristic = input;
                     break;
+                case "setK":
+                    k = Integer.parseInt(input);
                 case "blank":   // adds a blank line in console output.
                     System.out.println("");
                     break;
