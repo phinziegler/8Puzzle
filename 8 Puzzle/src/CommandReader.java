@@ -88,15 +88,21 @@ public class CommandReader {
 
     public static void main(String[] args) {
 
-        String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";
+
+        // EDIT VALUES BELOW //
+
+        String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";   // filepath
         String heuristic = "h2";    // default heuristic (# displaced tiles).
         int k = 10;                 // default value for k
         int maxNodes = 10000;       // default value for maxnodes
-        
+
+        // EDIT VALUES ABOVE //
+
+
+        // Read commands and exectute them
         CommandReader reader = new CommandReader(filePath);
         NPuzzle puzzle = new NPuzzle(8);
         Graph pGraph;
-
         boolean loop = true;
         while (loop) {
 
