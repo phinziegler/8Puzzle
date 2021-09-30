@@ -1,14 +1,14 @@
 blank
-maxNodes 50
+maxNodes -1
 .
-setState b14 352 678
-// randomizeState 10
+setState b12 345 678
+randomizeState 100
 .
 heuristic h2
 solve A-star
 .
 blank
 .
-setK 3
+setK 10
 solve beam
 blank
