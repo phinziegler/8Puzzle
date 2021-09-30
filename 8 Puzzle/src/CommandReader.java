@@ -87,7 +87,6 @@ public class CommandReader {
 
     public static void main(String[] args) {
 
-
         // EDIT VALUES BELOW //
 
         String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";   // filepath
