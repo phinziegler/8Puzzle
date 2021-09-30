@@ -94,7 +94,7 @@ public class CommandReader {
         String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";   // filepath
         String heuristic = "h2";    // default heuristic (# displaced tiles).
         int k = 10;                 // default value for k
-        int maxNodes = 10000;       // default value for maxnodes
+        int maxNodes = 15000;       // default value for maxnodes
 
         // EDIT VALUES ABOVE //
 

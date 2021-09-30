@@ -30,6 +30,6 @@ solve A-star
 .
 blank
 .
-setK 10
+setK 1
 solve beam
 blank

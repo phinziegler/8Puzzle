@@ -136,13 +136,15 @@ public class Graph {
 
         frontier.add(this.rootNode);
         int nodesExplored = 0;
+
         System.out.println("A* search from state " + this.rootNode.state + "with heuristic " + "\'" + this.heuristic + "\'.");
+        
         while (!frontier.isEmpty()) {
             Node curr = frontier.poll();
 
             // CHECK IF GOAL STATE HAS BEEN FOUND.
             if (curr.state.equals(this.goalState)) {
-                System.out.println("Reached Goal after " + nodesExplored + " nodes explored.");
+                System.out.println("Goal reached after " + nodesExplored + " nodes explored.");
                 this.printPath(curr);
                 return;
             }
@@ -290,7 +292,7 @@ public class Graph {
 
                 // DETECT IF GOAL REACHED
                 if(curr.state.equals(this.goalState)) {
-                    System.out.println("Goal Reached after " + nodesSearched + " nodes explored.");
+                    System.out.println("Goal reached after " + nodesSearched + " nodes explored.");
                     this.printPath(curr);
                     return;
                 }
