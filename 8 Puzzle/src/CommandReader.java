@@ -89,7 +89,7 @@ public class CommandReader {
 
         // EDIT VALUES BELOW //
 
-        String filePath = "C:\\Users\\Phineas Ziegler\\Documents\\Coding\\Java\\VScode 8 Puzzle\\8 Puzzle\\commands.txt";   // filepath
+        String filePath = "D:\\Documents\\Coding\\Java\\VSCode 8 Puzzle\\8 Puzzle\\commands.txt";   // filepath
         String heuristic = "h2";    // default heuristic
         int k = 10;                 // default value for k
         int maxNodes = 15000;       // default value for maxnodes
