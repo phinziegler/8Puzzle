@@ -11,6 +11,7 @@ blank
 heuristic h2
 .
 // you can look at a visual representation of the state like this...
+setState b12 345 678
 printIntState
 .
 // you can set the k value for beam search like this...
