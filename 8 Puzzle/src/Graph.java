@@ -295,6 +295,7 @@ public class Graph {
     public void beam(int k) {
         System.out.println("Beam search with k = " + k + " from state " + this.rootNode.state + ": ");
         LinkedList<Node> bestNodes = new LinkedList<Node>();
+        LinkedList<Node> explored = new LinkedList<Node>();
         LinkedList<Node> prevBest = new LinkedList<Node>();
         bestNodes.add(this.rootNode);
         int nodesSearched = 0;
@@ -334,20 +335,22 @@ public class Graph {
 
                 // EXPAND CURRENT NODE
                 this.expand(curr);
+                explored.add(curr);
 
                 // ADD CURR TO TESTNODES (avoiding duplicates)
-                Node same1 = getNodeWithSameState(testNodes, curr);
-                if(!testNodes.contains(same1)) {
-                    testNodes.add(curr);
-                }
+                // Node same1 = getNodeWithSameState(testNodes, curr);
+                // if(!testNodes.contains(same1)) {
+                //     testNodes.add(curr);
+                // }
 
                 // FOR EACH N in CURRENT NODE, ADD TO TESTNODES AND EVALUATE (avoiding duplicates)
                 Iterator<Edge> edgeit = curr.edges.iterator();
                 while(edgeit.hasNext()) {
                     Node n = edgeit.next().endNode;
                     
-                    Node same2 = getNodeWithSameState(testNodes, n);
-                    if(!testNodes.contains(same2)) {
+                    Node same1 = getNodeWithSameState(testNodes, n);
+                    Node same2 = getNodeWithSameState(explored, n);
+                    if(!testNodes.contains(same1) && !explored.contains(same2)) {
                         this.evaluate(n);
                         testNodes.add(n); 
                     }
