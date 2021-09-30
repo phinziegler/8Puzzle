@@ -1,4 +1,24 @@
+// HERE IS ALL THE COMMANDS I ADDED
+.
+// you can write comments like this
+.
+// print blank line in console like this...
 blank
+.
+// you can add spacing in the txt file using '.'
+.
+// you can change the A* heuristic like this...
+heuristic h2
+.
+// you can look at a visual representation of the state like this...
+printIntState
+.
+// you can set the k value for beam search like this...
+setK 10
+.
+.
+.
+// START OF ACTUAL STUFF
 maxNodes -1
 .
 setState b12 345 678
@@ -9,6 +29,6 @@ solve A-star
 .
 blank
 .
-setK 2
+setK 10
 solve beam
 blank
