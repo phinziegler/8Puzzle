@@ -76,12 +76,6 @@ public class Graph {
         }
     }
 
-    // used by Beam search. A k holds a state that it currently holds, as well as the path to get to this point.
-    private class Beam {
-        private LinkedList<String> moves = new LinkedList<String>();
-        private Node currNode;
-    }
-
     // Graph Constructor
     public Graph(NPuzzle puzzle, int maxNodes, String heuristic) {
         this.rootNode = new Node(puzzle.getState(), "", 0, null);
@@ -114,7 +108,7 @@ public class Graph {
                 this.aStar();
                 break;
             case "beam":
-                this.beam();
+                this.beam(10);
                 break;
             default:
                 System.out.println(new Exception("Invalid modifier for 'solve' command"));
@@ -192,6 +186,7 @@ public class Graph {
 
     // expand a node -- Helper for A*
     private void expand(Node curr) {
+        curr.edges.clear();
         String[] moveList = new String[] { "right", "down", "left", "up" };
 
         for (int i = 0; i < moveList.length; i++) {
@@ -200,14 +195,25 @@ public class Graph {
             boolean valid = puzzle.move(moveList[i]);
 
             if (valid) { // if the move was legal.
+                //System.out.println("move " + moveList[i] + " at pos " + curr.state +"was valid");
                 String newState = puzzle.getState();
                 this.addEdge(curr, new Node(newState, moveList[i], curr.gCost + this.moveCost, curr));
             }
         }
     }
 
-    // looks through the frontier and returns a node with a state matching that of
-    // n. --- helper for A*
+    // // looks through the frontier and returns a node with a state matching that of
+    // // n. --- helper for A*
+    // private Node getNodeWithSameState(LinkedList<Node> frontier, Node n) {
+    //     Iterator<Node> iterator = frontier.iterator();
+    //     while (iterator.hasNext()) {
+    //         Node curr = iterator.next();
+    //         if (curr.state.equals(n.state)) {
+    //             return curr;
+    //         }
+    //     }
+    //     return new Node("", "", 0, null); // impossible to exist in frontier.
+    // }
     private Node getNodeWithSameState(PriorityQueue<Node> frontier, Node n) {
         Iterator<Node> iterator = frontier.iterator();
         while (iterator.hasNext()) {
@@ -255,20 +261,130 @@ public class Graph {
     // beam search is A* with a fixed frontier.
     // only add to the frontier if it is one of the best candidates
 
-    /* 
-        best.add(rootNode)  // CAPPED PRIORITY QUEUE, WHERE IT HOLDS A MAX OF K ELEMENTS
+    /* PSEUDOCODE
+
+        bestNodes.add(rootNode)  // best is a list of length k
+        frontier = new list;
 
         while(!frontier.isEmpty())
-            foreach nodes in best
-                expand(n)
-                foreach n in nodes
-                    testNodes.add(n)    
+            foreach node in frontier
+                explored.add(node)
+
+                if(node.state == goalState)
+                    printpath()
+                    return
+
+                expand(node)
+                foreach n in node
+                    if !frontier.contains(n)
+                        //frontier.add(n)
+                        testNodes.add(n)    // a list of length k^b
                 .
             .
+            allNodes = bestNodes.concat(frontier)
+            allNodes.sort()
+            bestNodes = allNodes.subList(0, k)  // new list of best k nodes
         .
 
     */
-    public void beam() {
+    public void beam(int k) {
+        System.out.println("Solving from state " + this.rootNode.state + ": ");
 
+        LinkedList<Node> bestNodes = new LinkedList<Node>();
+        //LinkedList<Node> prevBest = new LinkedList<Node>();
+
+        int nodesSearched = 0;
+
+        bestNodes.add(this.rootNode);
+
+        while(true) {
+            PriorityQueue<Node> allNodes = new PriorityQueue<Node>();
+            LinkedList<Node> testNodes = new LinkedList<Node>();
+
+            Iterator<Node> besterator = bestNodes.iterator();
+            while(besterator.hasNext()) {
+                Node curr = besterator.next();
+                //System.out.println("curr = " + curr.state);
+                nodesSearched++;
+
+                if(curr.state.equals(this.goalState)) {
+                    System.out.println("Goal Reached after " + nodesSearched + " nodes explored.");
+                    this.printPath(curr);
+                    return;
+                }
+                // if(this.isSameList(bestNodes, prevBest)) {
+                //     System.out.println("Error: All nodes stuck at local min.");
+                //     return;
+                // }
+                if(this.maxNodes > 0 && this.maxNodes < nodesSearched) {
+                    System.out.println("Error: Max number of nodes searched (" + this.maxNodes + ").");
+                    return;
+                }
+
+                //prevBest = bestNodes;
+                this.expand(curr);
+
+                Iterator<Edge> edgeit = curr.edges.iterator();
+                //System.out.println(curr.edges.size());
+                while(edgeit.hasNext()) {
+                    Node n = edgeit.next().endNode;
+                    this.evaluate(n);           // assign a value to n
+
+                    testNodes.add(n);           // we want to know if these nodes are better than any of the 
+                }
+            }
+
+            allNodes.clear();
+            allNodes.addAll(testNodes);
+
+            //System.out.println("allNodes num = " + allNodes.size());
+
+            bestNodes.clear();
+
+            int i=0;
+            while(!allNodes.isEmpty() && i < k) {
+                bestNodes.add(allNodes.poll());
+                i++;
+            }
+
+            //System.out.println("bestNodes = " + bestNodes.size());
+        }
     }
+
+    // the evaluation function for beam
+    private void evaluate(Node n) {
+        n.calcHeuristic("h2");      // use manhattan distance.
+        n.fCost = n.fCost - n.gCost;  // we ignore the gCost assigned to the node from when it was expanded
+    }
+
+    // // checks if two lists are the same.
+    // private boolean isSameList(LinkedList<Node> bestNodes, LinkedList<Node> prevBest) {
+    //     Iterator<Node> besterator = bestNodes.iterator();
+    //     while(besterator.hasNext()) {       // if there is a state present in bestNodes that does not exist in prevBest, return false
+    //         Node bestTest = besterator.next();
+    //         Node same = this.getNodeWithSameState(prevBest, bestTest);
+
+    //         if(!prevBest.contains(same)) {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+    
+
+    // public static void main(String[] args) {
+    //     PriorityQueue<Integer> p = new PriorityQueue<Integer>();   // priority queue with capacity 3
+
+    //     p.add(1);
+    //     p.add(4);
+    //     p.add(2);
+    //     p.add(5);
+
+    //     while(!p.isEmpty()) {
+    //         System.out.println(p.remove());
+    //     }
+        
+
+
+    // }
 }

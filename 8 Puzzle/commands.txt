@@ -1,18 +1,11 @@
-// setState b12 345 678
-// randomizeState 5000
-maxNodes 30000
+maxNodes 500
 .
-setState 214 576 38b
-// maxNodes 3000
-.
-heuristic h1
-solve A-star
-blank
+setState b14 352 678
+// randomizeState 10
 .
 heuristic h2
 solve A-star
+.
 blank
 .
-heuristic h3
-solve A-star
-blank
+solve beam
