@@ -78,11 +78,10 @@ public class CommandReader {
         return output;
     }
 
-
+    
     ///////////////////
-    /// MAIN METHOD /// 
+    /// MAIN METHOD ///
     ///////////////////
-
 
 
     public static void main(String[] args) {

@@ -110,16 +110,15 @@ public class Graph {
     }
 
     // CALLED BY COMMAND READER
-    public void solve(String alg) {
+    public boolean solve(String alg) {
         switch (alg) {
-            case "A-star":
-                this.aStar();
-                break;
+            case "A-Star":
+                return this.aStar();
             case "beam":
-                this.beam(this.k);
-                break;
+                return this.beam(this.k);
             default:
                 System.out.println(new Exception("Invalid modifier for 'solve' command"));
+                return false;
         }
     }
 
@@ -130,7 +129,7 @@ public class Graph {
     
 
     // A-STAR SEARCH
-    private void aStar() {
+    private boolean aStar() {
         PriorityQueue<Node> frontier = new PriorityQueue<Node>();   // states to be explored.
         LinkedList<Node> explored = new LinkedList<Node>();         // already explored states.
 
@@ -146,7 +145,7 @@ public class Graph {
             if (curr.state.equals(this.goalState)) {
                 System.out.println("Goal reached after " + nodesExplored + " nodes explored.");
                 this.printPath(curr);
-                return;
+                return true;
             }
 
             explored.add(curr);
@@ -155,7 +154,7 @@ public class Graph {
             nodesExplored++;
             if (this.maxNodes > 0 && this.maxNodes < nodesExplored) {
                 System.out.println("Error: Max number of nodes searched (" + this.maxNodes + ").");
-                return;
+                return false;
             }
 
             this.expand(curr);  // branch --- creates 2,3, or 4 child nodes depending on the location of b.
@@ -192,7 +191,7 @@ public class Graph {
         }
         // ALGORITHM FAILED TO FIND A SOLUTION
         System.out.println("Failed to find solution.");
-        return;
+        return false;
 
     }
 
@@ -268,7 +267,7 @@ public class Graph {
     }
 
     // LOCAL BEAM SEARCH
-    public void beam(int k) {
+    public boolean beam(int k) {
         LinkedList<Node> bestNodes = new LinkedList<Node>();    // list of current k best
         LinkedList<Node> explored = new LinkedList<Node>();     // list of all explored nodes
 
@@ -293,13 +292,13 @@ public class Graph {
                 if(curr.state.equals(this.goalState)) {
                     System.out.println("Goal reached after " + nodesSearched + " nodes explored.");
                     this.printPath(curr);
-                    return;
+                    return true;
                 }
 
                 // DETECT IF MAX NODES REACHED
                 if(this.maxNodes > 0 && this.maxNodes < nodesSearched) {
                     System.out.println("Error: Max number of nodes searched (" + this.maxNodes + ").");
-                    return;
+                    return false;
                 }
 
                 // EXPAND CURRENT NODE -- also add current node to explored
@@ -323,7 +322,7 @@ public class Graph {
             // STUCK AT LOCAL MIN --- fail condition
             if(testNodes.size() == 0) {
                 System.out.println("Error: all beams stuck at local min.");
-                return;
+                return false;
             }
 
             sortNodes.addAll(testNodes);

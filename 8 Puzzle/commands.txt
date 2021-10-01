@@ -3,7 +3,7 @@
 // you can write comments like this
 .
 // print blank line in console like this...
-blank
+// blank
 .
 // you can add spacing in the txt file using '.'
 .
@@ -12,24 +12,17 @@ heuristic h2
 .
 // you can look at a visual representation of the state like this...
 setState b12 345 678
-printIntState
+// printIntState
 .
 // you can set the k value for beam search like this...
 setK 10
 .
 .
 .
-// START OF ACTUAL STUFF
-maxNodes -1
+// START
 .
-setState b12 345 678
-randomizeState 1000
+setState b74 251 368
+maxNodes 20000
 .
-heuristic h2
-solve A-star
-.
-blank
-.
-setK 1
-solve beam
+setK 5
 blank
